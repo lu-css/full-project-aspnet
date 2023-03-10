@@ -1,4 +1,9 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using tcc.Data;
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<TccUserContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("TccUserContext") ?? throw new InvalidOperationException("Connection string 'TccUserContext' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
