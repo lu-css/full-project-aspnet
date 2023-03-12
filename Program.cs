@@ -1,9 +1,17 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using tcc.Data;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using tcc.Areas.Identity.Data;
+
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<TccUserContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("TccUserContext") ?? throw new InvalidOperationException("Connection string 'TccUserContext' not found.")));
+var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+options.UseNpgsql(builder.Configuration.GetConnectionString("TccUserContext") ?? throw new InvalidOperationException("Connection string 'TccUserContext' not found.")));
+
+builder.Services
+.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+.AddEntityFrameworkStores<ApplicationDbContext>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -28,5 +36,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapRazorPages();
 
 app.Run();
