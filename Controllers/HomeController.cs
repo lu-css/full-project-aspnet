@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 // using tcc.Models;
@@ -23,6 +24,7 @@ public class HomeController : Controller
         return View();
     }
 
+    [Authorize]
     public async Task<IActionResult> Info()
     {
         var user = await _userManager.GetUserAsync(User);
